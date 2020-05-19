@@ -283,7 +283,6 @@ components:
             オブジェクトの一意な ID
         resourceVersion:
           type: string
-          readOnly: true
           description: |
             システムで採番されるオブジェクトのバージョン番号。  
             更新対象リソースにこの値を含めると楽観的ロックの検証が行われます。
@@ -935,6 +934,25 @@ components:
         | 設定可能な filter オブジェクト数  |  20  |
         | AND / OR の配列要素上限数  |  10  |
 
+    ErrorResponseSchema:
+      type: object
+      properties:
+        timestamp:
+          description: エラー発生時刻
+          type: string
+        status:
+          description: ステータスコード
+          type: integer
+        error:
+          description: エラー内容
+          type: string
+        message:
+          description: エラーメッセージ
+          type: string
+        path:
+          description: エラーが発生した URL パス
+          type: string
+
   parameters:
     accountCode:
       name: accountCode
@@ -1009,12 +1027,28 @@ paths:
                 $ref: "#/components/schemas/ApiDefinitionList"
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         403:
           description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
 
   /apis/apidefinition.database/v1/accounts/{accountCode}/apidefinitions/{name}:
     parameters:
@@ -1163,12 +1197,34 @@ paths:
                 $ref: "#/components/schemas/ApiDefinition"
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         403:
           description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+        409:
+          description: API 定義の更新が競合しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
 
     get:
       tags:
@@ -1188,14 +1244,34 @@ paths:
                 $ref: "#/components/schemas/ApiDefinition"
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         403:
           description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         404:
           description: 指定された API 定義は存在しません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
 
     delete:
       tags:
@@ -1211,14 +1287,34 @@ paths:
       responses:
         204:
           description: API 定義削除成功時のレスポンスです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         403:
           description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         404:
           description: 指定された API 定義は存在しません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
 
   /apis/apidefinition.database/v1/accounts/{accountCode}/apidefinitions/{name}/openapiv3: 
     parameters:
@@ -1255,14 +1351,34 @@ paths:
                 type: object
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         403:
           description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         404:
           description: 指定された API 定義は存在しません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
 
   /apis/apidefinition.database/v1/accounts/{accountCode}/openapiv3:
     parameters:
@@ -1293,12 +1409,28 @@ paths:
                 type: object
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         403:
           description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
 
   /apis/apidefinition.database/v1/accounts/{accountCode}/databasedefinitions:
     parameters:
@@ -1323,12 +1455,28 @@ paths:
                 $ref: '#/components/schemas/DatabaseDefinitionList'
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         403:
           description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
 
   /apis/apidefinition.database/v1/accounts/{accountCode}/databasedefinitions/{name}:
     parameters:
@@ -1357,14 +1505,34 @@ paths:
                 $ref: '#/components/schemas/DatabaseDefinition'
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         403:
           description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         404:
           description: 指定されたデータベース定義は存在しません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
 
   /apis/record.database/v1/accounts/{accountCode}/{name}/records:
     parameters:
@@ -1413,10 +1581,22 @@ paths:
                   age: 20
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
       security:
         - oauth:
             - db:record:execute
@@ -1479,10 +1659,22 @@ paths:
                     age: 20
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
       security:
         - oauth:
             - db:record:execute
@@ -1526,10 +1718,22 @@ paths:
                 count: 2
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
       security:
         - oauth:
             - db:record:execute
@@ -1574,12 +1778,28 @@ paths:
                     age: 20
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         404:
           description: 指定されたレコードは存在しません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
       security:
         - oauth:
             - db:record:execute
@@ -1634,10 +1854,22 @@ paths:
                   age: 25
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
       security:
         - oauth:
             - db:record:execute
@@ -1653,12 +1885,28 @@ paths:
           description: レコード削除成功のレスポンスです
         400:
           description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         404:
           description: 対象レコードが存在しません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
       security:
         - oauth:
             - db:record:execute
