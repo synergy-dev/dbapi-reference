@@ -1287,10 +1287,6 @@ paths:
       responses:
         204:
           description: API 定義削除成功時のレスポンスです
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
           content:
