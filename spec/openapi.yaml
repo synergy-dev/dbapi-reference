@@ -452,7 +452,7 @@ components:
       type: object
       description: |
         API 定義のステータス。読み取り専用。  
-        データベース定義適用中などready.statusがtrueでない際にはAPIを利用することはできません。
+        データベース設定情報適用中などready.statusがtrueでない際にはAPIを利用することはできません。
       properties:
         ready:
           $ref: "#/components/schemas/ReadyStatus"
@@ -482,7 +482,7 @@ components:
     DatabaseDefinitionSyncStatus:
       type: object
       description: |
-        API 定義で指定した項目がデータベース定義に反映されているかを示すステータス
+        API 定義で指定した項目がデータベース設定情報に反映されているかを示すステータス
       properties:
         lastUpdatedTimestamp:
           type: string
@@ -1444,7 +1444,7 @@ paths:
         - bearer: []
       responses:
         200:
-          description: データベース定義取得成功時のレスポンスです
+          description: データベース設定情報取得成功時のレスポンスです
           content:
             application/json:
               schema:
@@ -1494,7 +1494,7 @@ paths:
         - bearer: []
       responses:
         200:
-          description: データベース定義定義成功時のレスポンスです
+          description: データベース設定情報定義成功時のレスポンスです
           content:
             application/json:
               schema:
@@ -1518,7 +1518,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         404:
-          description: 指定されたデータベース定義は存在しません
+          description: 指定されたデータベース設定情報は存在しません
           content:
             application/json:
               schema:
