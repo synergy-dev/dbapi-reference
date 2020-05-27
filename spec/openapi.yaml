@@ -19,7 +19,8 @@ info:
     発行時アクセス可能な IP アドレスを設定することで、指定した IP アドレス以外からのリクエストを制限することができます。
 
     Synergy!データベースAPI にアクセスするためには、リクエストヘッダーに発行したクライアント認証キー、クライアントシークレットを使用して取得したアクセストークンを付与する必要があります。  
-    アクセストークンは事前に Synergy! 認可サーバ (https://auth.paas.crmstyle.com/oauth2/token) から OAuth 2.0 のクライアント・クレデンシャルズフローにより取得します。
+    アクセストークンは事前に Synergy! 認可サーバ (https://auth.paas.crmstyle.com/oauth2/token) から OAuth 2.0 のクライアント・クレデンシャルズフローにより取得します。  
+    アクセストークンには有効期限が設定されており、切れるまでアクセストークンは有効です。Synergy!データベースAPI へアクセスするたびにアクセストークンを取得しないようにしてください。
 
     ### アクセストークン取得
 
@@ -116,6 +117,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2020/05/27 | データベースごとに必要な ID 型を明記 <br> アクセストークンの注意事項を追記 |
     | 2020/05/19 | 初版作成 |
     
   termsOfService: https://docs.synergy-marketing.co.jp/dbapi-reference/contract-provisions.html
@@ -146,16 +148,16 @@ tags:
       ## Synergy! 項目型一覧
       | Synergy! 項目型         | x-synergy-type              | 型      | 項目新規作成 | 備考 |
       |------------------------|-----------------------------|---------|:---------:|------|
-      | Synergy!ID             | synergyId                   | integer | ×         | マスターデータベースを対象に API 定義する場合、プロパティ名を `id` にして定義してください |
-      | HistoryID              | historyId                   | integer | ×         | 顧客データベースを対象に API 定義する場合、プロパティ名を `id` にして定義してください |
+      | Synergy!ID             | synergyId                   | integer | ×         | ・マスターデータベースを対象に API 定義する場合、プロパティ名を `id` にして定義してください <br> ・履歴型データベースを対象に API 定義する場合、Synergy!ID は必須です |
+      | HistoryID              | historyId                   | integer | ×         | ・履歴型データベースを対象に API 定義する場合、プロパティ名を `id` にして定義してください |
       | ＰＣメールアドレス型      | mailAddress                 | string  | ×          | email 形式<br>（e.g. synergy@example.com）|
       | 携帯メールアドレス型      | mobileMailAddress           | string  | ×          | email 形式<br>（e.g. synergy@example.com）|
       | 更新日時                | updatedDate                 | string  | ×          | ISO 8601 形式<br>（e.g. 2020-05-01T00:00:00+09:00）|
       | システム登録日時         | registeredDate              | string  | ×          | ISO 8601 形式<br>（e.g. 2020-05-01T00:00:00+09:00）|
-      | メール受信拒否フラグ型    | mailRefusalFlag             | boolean | ×          | ご利用には Synergy! メール配信機能の契約が必要です |
-      | ＰＣメールエラーカウント型 | mailAddressErrorCount       | integer | ×          | ご利用には Synergy! メール配信機能の契約が必要です |
-      | 携帯メールエラーカウント型 | mobileMailAddressErrorCount | integer | ×          | ご利用には Synergy! メール配信機能の契約が必要です |
-      | メルマガ解除フラグリスト型 | mlRefusalFlags              | array   | ×          | ご利用には Synergy! メール配信機能の契約が必要です |
+      | メール受信拒否フラグ型    | mailRefusalFlag             | boolean | ×          | ・ご利用には Synergy! メール配信機能の契約が必要です |
+      | ＰＣメールエラーカウント型 | mailAddressErrorCount       | integer | ×          | ・ご利用には Synergy! メール配信機能の契約が必要です |
+      | 携帯メールエラーカウント型 | mobileMailAddressErrorCount | integer | ×          | ・ご利用には Synergy! メール配信機能の契約が必要です |
+      | メルマガ解除フラグリスト型 | mlRefusalFlags              | array   | ×          | ・ご利用には Synergy! メール配信機能の契約が必要です |
       | 文字型                  | text                        | string  | ◯         |      |
       | 数値型                  | number                      | number  | ◯         |      |
       | 年月日型                | date                        | string  | ◯          | yyyy-MM-dd 形式（e.g. 2020-05-01）|
@@ -164,7 +166,7 @@ tags:
       | 単一選択型               | singleSelect                | array  | ◯          |      |
       | 複数選択型               | multipleSelect              | array   | ◯         |      |
       | パスワード型             | password                    | string  |  ◯         |      |
-      | パスワードハッシュ型      | passwordHash                | string  | △          | ご利用には Synergy! のオプション契約が必要です |
+      | パスワードハッシュ型      | passwordHash                | string  | △          | ・ご利用には Synergy! のオプション契約が必要です |
 
       ## 既存項目を API に定義する
       Synergy!データベースAPI では、既に管理画面などからデータベースに設定されている項目を API に定義することができます。
@@ -1130,6 +1132,12 @@ paths:
         | 年月日型        | string | date      |
         | 月日型          | string | month-day |
         | タイムスタンプ型 | string | date-time |
+
+        * 定義対象のデータベース種別により各 ID 型を定義する必要があります。
+        | データベース種別    | 説明              |
+        |-------------------|------------------|
+        | マスターデータベース  | Synergy!ID 型をプロパティ名 id で定義してください。 |
+        | 履歴型データベース   | HistoryID 型をプロパティ名 id で定義してください。 <br> Synergy!ID 型のプロパティを定義してください。 |
 
         #### 既存項目を定義する場合
         [既存項目を API に定義する](#section/API)
