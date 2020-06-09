@@ -117,6 +117,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2020/06/08 | オブジェクト名にパターンに関する注意事項を追記 |
     | 2020/05/27 | データベースごとに必要な ID 型を明記 <br> アクセストークンの注意事項を追記 |
     | 2020/05/19 | 初版作成 |
     
@@ -268,7 +269,8 @@ components:
         name:
           description: |
             オブジェクト名です。  
-            同種のオブジェクト（apiVersion, kind, accountCode 内）で一意な名前になっています。
+            同種のオブジェクト（apiVersion, kind, accountCode 内）で一意な名前になっています。  
+            ApiDefinition オブジェクトの場合、pattern は `^[a-z][a-z0-9-]*$` となります。
           type: string
           maxLength: 50
           pattern: "^[a-z_][a-z0-9-_]*$"
