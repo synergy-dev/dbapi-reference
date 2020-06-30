@@ -117,6 +117,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2020/06/30 | サンプルコード（PHP）のリンクを追加 <br> nullable 補完について記載 |
     | 2020/06/08 | オブジェクト名にパターンに関する注意事項を追記 |
     | 2020/05/27 | データベースごとに必要な ID 型を明記 <br> アクセストークンの注意事項を追記 |
     | 2020/05/19 | 初版作成 |
@@ -243,6 +244,10 @@ tags:
       | 単一選択型              | ○             | ○      | ○                     | ○              | ×                         | ×                                                                | ×                                |
       | 複数選択型              | ×             | ×      | ×                     | ×              | ○                         | ×                                                                | ○                                |
 
+      ## サンプルコード
+      データベースAPI(ver1.0.0) を実行するサンプルプログラムです。  
+      * [PHP](https://github.com/synergy-dev/dbapi-samples/tree/master/PHP)
+
 components:
   schemas:
     ObjectMeta:
@@ -337,6 +342,7 @@ components:
                 x-synergy-mapping: _mailAddress
                 type: string
                 format: email
+                nullable: true
               createdAt:
                 x-synergy-type: registeredDate
                 x-synergy-mapping: _registeredDate
@@ -351,15 +357,18 @@ components:
                 x-synergy-type: text
                 x-synergy-mapping: api1_name
                 type: string
+                nullable: true
               age:
                 x-synergy-type: number
                 x-synergy-mapping: api1_age
                 type: number
+                nullable: true
               birthday:
                 x-synergy-type: date
                 x-synergy-mapping: api1_birthday
                 type: string
                 format: date
+                nullable: true
               multipleSelect:
                 x-synergy-type: multipleSelect
                 x-synergy-mapping: api1_multiple1
@@ -376,8 +385,10 @@ components:
                   properties:
                     extraText:
                       type: string
+                      nullable: true
                     value:
                       type: integer
+                nullable: true
           status:
             ready:
               lastUpdatedTimestamp: '2020-05-12T10:05:53.658468Z'
@@ -664,6 +675,21 @@ components:
         nullable:
           type: boolean
           default: false
+          description: |
+            下記 Synergy! 項目型は `nullable` が設定されていない場合、`nullable: true` が設定されます。
+            * ＰＣメールアドレス型
+            * 携帯メールアドレス型
+            * メルマガ解除フラグリスト型
+            * 文字型
+            * 数値型
+            * 年月日型
+            * 月日型
+            * タイムスタンプ型
+            * 単一選択型
+            * 複数選択型
+            * パスワード型
+            * パスワードハッシュ型
+
         readOnly:
           type: boolean
           default: false
