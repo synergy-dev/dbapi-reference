@@ -168,7 +168,6 @@ tags:
       | 単一選択型               | singleSelect                | array  | ◯          |      |
       | 複数選択型               | multipleSelect              | array   | ◯         |      |
       | パスワード型             | password                    | string  |  ◯         |      |
-      | パスワードハッシュ型      | passwordHash                | string  | △          | ・ご利用には Synergy! のオプション契約が必要です |
 
       ## 既存項目を API に定義する
       Synergy!データベースAPI では、既に管理画面などからデータベースに設定されている項目を API に定義することができます。
