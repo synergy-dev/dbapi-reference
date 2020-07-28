@@ -1,7 +1,7 @@
 openapi: 3.0.2
 
 info:
-  version: 1.0.0
+  version: 1.1.0
   title: Synergy!データベースAPI
   description: |
     # はじめに
@@ -117,6 +117,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2020/07/28 | Filter オブジェクトの階層制限について記載 <br> isNotNull オペレータについて追記 <br> 複数選択型およびメルマガ解除フラグリスト型が isNull, isNotNull オペレータ使用可能になることを記載 <br> Record のエラーレスポンスについて追記 |
     | 2020/06/30 | サンプルコード（PHP）のリンクを追加 <br> nullable 補完について記載 |
     | 2020/06/08 | オブジェクト名にパターンに関する注意事項を追記 |
     | 2020/05/27 | データベースごとに必要な ID 型を明記 <br> アクセストークンの注意事項を追記 |
@@ -207,6 +208,7 @@ tags:
       | eq            | 等しい                     |
       | notEq         | 等しくない                 |
       | isNull        | 対象が Null である         |
+      | isNotNull     | 対象が Null でない         |
       | lt            | より小さい                 |
       | lte           | 以下                       |
       | gt            | より大きい                 |
@@ -223,25 +225,25 @@ tags:
       | containsSome  | 対象のいずれかを含んでいる <br> ※ 右辺に複数の値を設定可能 |
 
       ## 型ごとの使用可能オペレータ
-      | 型                    | eq, <br> notEq | isNull | lt, lte, <br> gt, gte | in, <br> notIn | contains, <br> notContains | startsWith, <br> notStartsWith, <br> endsWith, <br> notEndsWith | containsEvery, <br> containsSome |
-      |-----------------------|----------------|--------|-----------------------|----------------|---------------------------|------------------------------------------------------------------|----------------------------------|
-      | Synergy!ID            | ○              | ×      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | HistoryID             | ○              | ×      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | ＰＣメールアドレス型      | ○             | ○      | ○                     | ○              | ○                         | ○                                                                | ×                                |
-      | 携帯メールアドレス型      | ○             | ○      | ○                     | ○              | ○                         | ○                                                                | ×                                |
-      | 更新日時                | ○             | ×      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | システム登録日時         | ○             | ×      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | メール受信拒否フラグ型    | ○             | ×      | ×                     | ×              | ×                         | ×                                                                | ×                                |
-      | ＰＣメールエラーカウント型 | ○             | ×      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | 携帯メールエラーカウント型 | ○             | ×      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | メルマガ解除フラグリスト型 | ×             | ×      | ×                     | ×              | ○                         | ×                                                                | ○                                |
-      | 文字型                  | ○             | ○      | ○                     | ○              | ○                         | ○                                                                | ×                                |
-      | 数値型                  | ○             | ○      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | 年月日型                | ○             | ○      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | 月日型                  | ○             | ○      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | タイムスタンプ型         | ○             | ○      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | 単一選択型              | ○             | ○      | ○                     | ○              | ×                         | ×                                                                | ×                                |
-      | 複数選択型              | ×             | ×      | ×                     | ×              | ○                         | ×                                                                | ○                                |
+      | 型                    | eq, <br> notEq | isNull <br> isNotNull | lt, lte, <br> gt, gte | in, <br> notIn | contains, <br> notContains | startsWith, <br> notStartsWith, <br> endsWith, <br> notEndsWith | containsEvery, <br> containsSome |
+      |-----------------------|----------------|-----------------------|-----------------------|----------------|---------------------------|------------------------------------------------------------------|----------------------------------|
+      | Synergy!ID            | ○              | ×                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | HistoryID             | ○              | ×                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | ＰＣメールアドレス型      | ○             | ○                     | ○                     | ○              | ○                         | ○                                                                | ×                                |
+      | 携帯メールアドレス型      | ○             | ○                     | ○                     | ○              | ○                         | ○                                                                | ×                                |
+      | 更新日時                | ○             | ×                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | システム登録日時         | ○             | ×                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | メール受信拒否フラグ型    | ○             | ×                     | ×                     | ×              | ×                         | ×                                                                | ×                                |
+      | ＰＣメールエラーカウント型 | ○             | ×                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | 携帯メールエラーカウント型 | ○             | ×                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | メルマガ解除フラグリスト型 | ×             | ○                     | ×                     | ×              | ○                         | ×                                                                | ○                                |
+      | 文字型                  | ○             | ○                     | ○                     | ○              | ○                         | ○                                                                | ×                                |
+      | 数値型                  | ○             | ○                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | 年月日型                | ○             | ○                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | 月日型                  | ○             | ○                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | タイムスタンプ型         | ○             | ○                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | 単一選択型              | ○             | ○                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
+      | 複数選択型              | ×             | ○                     | ×                     | ×              | ○                         | ×                                                                | ○                                |
 
       ## サンプルコード
       データベースAPI(ver1.0.0) を実行するサンプルプログラムです。  
@@ -957,10 +959,11 @@ components:
         }
         ```
 
-        ### オブジェクト上限数
+        ### Filter オブジェクトの制限
         | 項目   |  上限数  |
         | ---- | ---- |
         | 設定可能な filter オブジェクト数  |  20  |
+        | 設定可能な filter オブジェクトの階層数  |  3  |
         | AND / OR の配列要素上限数  |  10  |
 
     ErrorResponseSchema:
@@ -1622,6 +1625,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
+        403:
+          description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
           content:
@@ -1700,6 +1709,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
+        403:
+          description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
           content:
@@ -1755,6 +1770,12 @@ paths:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+        403:
+          description: リソースにアクセスする権限が不足しています
           content:
             application/json:
               schema:
@@ -1819,8 +1840,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
+        403:
+          description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         404:
-          description: 指定されたレコードは存在しません
+          description: 対象レコードが存在しません
           content:
             application/json:
               schema:
@@ -1895,6 +1922,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
+        403:
+          description: リソースにアクセスする権限が不足しています
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+        404:
+          description: 対象レコードが存在しません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
         429:
           description: アクセス回数が制限数を超過しました
           content:
@@ -1922,6 +1961,12 @@ paths:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
           description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+        403:
+          description: リソースにアクセスする権限が不足しています
           content:
             application/json:
               schema:
