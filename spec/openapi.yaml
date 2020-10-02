@@ -117,6 +117,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2020/10/02 | Record.queryRecords の件数上限判定について記載 |
     | 2020/07/28 | Filter オブジェクトの階層制限について記載 <br> isNotNull オペレータについて追記 <br> 複数選択型およびメルマガ解除フラグリスト型が isNull, isNotNull オペレータ使用可能になることを記載 <br> Record のエラーレスポンスについて追記 |
     | 2020/06/30 | サンプルコード（PHP）のリンクを追加 <br> nullable 補完について記載 |
     | 2020/06/08 | オブジェクト名にパターンに関する注意事項を追記 |
@@ -863,8 +864,8 @@ components:
       properties:
         limit:
           description: |
-            1リクエストで取得したい最大アイテム数を指定してください。
-            未指定の場合、100 になります。
+            1リクエストで取得したい最大アイテム数を指定してください。<br>
+            検索件数が最大アイテム数を超えた場合、レスポンスの `metadata.hasMore` が `true` になります。
           type: integer
           default: 100
           maximum: 100
@@ -1681,6 +1682,8 @@ paths:
               schema:
                 type: object
               example:
+                metadata:
+                  hasMore: false
                 items:
                   - id: 2
                     birthday: "YYYY-MM-DD"
