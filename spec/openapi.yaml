@@ -129,7 +129,7 @@ info:
   termsOfService: https://docs.synergy-marketing.co.jp/dbapi-reference/contract-provisions.html
   contact:
     url: https://www.synergy-marketing.co.jp/cloud/synergy/
-    email: api-support@i.msgs.jp
+    email: api-tech-support@synergy101.jp
 servers:
   - url: https://db.paas.crmstyle.com/
 tags:
