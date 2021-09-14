@@ -117,6 +117,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2021/09/14 | ApiDefinition.putApiDefinition 実行時の注意事項を追記 |
     | 2021/07/27 | DatabaseDefinition.listDatabaseDefinition および DatabaseDefinition.getDatabaseDefinition で返却される項目の並び順を管理画面のデータベース設計で設定された表示順で返却するよう修正 |
     | 2021/06/29 | 選択肢のプロパティに required を補完するよう変更されたため example を修正 |
     | 2021/01/26 | Record.createRecord, Record.patchRecord で 409 エラーが返却されることを追記 |
@@ -206,6 +207,17 @@ tags:
         }
       }
       ```
+
+      ## putApiDefinition実行時の注意事項
+      API 定義更新時、x-synergy-select-value-definitions を使用して既存の選択型項目の選択肢を削除 / 編集すると、  
+      意図せず選択肢定義を変更してしまうことがあります。
+
+      __選択肢が変更された場合、管理画面での選択肢追加・変更を打ち消すような不整合が生じる可能性があります。__  
+      例えば、選択型項目に存在する選択肢を API 定義に含めずに更新すると、該当の選択肢は削除され、データベースに格納されている選択データも削除されます。
+
+      API定義から選択肢を管理しない場合は、x-synergy-select-value-definitionsを定義しないようにしてください。  
+      選択肢の管理を行う場合は、API定義を更新する前に、最新の選択型項目の定義を [DatabaseDefinition](#tag/DatabaseDefinition) から取得し、
+      今から更新する選択肢内容が問題ないか確認してからAPI定義を更新してください。
 
       ## オペレータ一覧
       | オペレータ      | 説明                       |
@@ -1107,6 +1119,7 @@ paths:
 
         登録済みの API 定義にプロパティを追加・削除することで API 定義を更新することができます。  
         なお、プロパティを削除しても定義していたデータベース項目は削除されません。
+        ただし、選択型項目については選択肢が削除される場合がありますのでご注意ください。くわしくは[こちら](#section/putApiDefinition)。
 
         ## API 定義について
         Request samples を参考に API 定義を JSON 文字列で構築してリクエストボディに指定し、  
