@@ -117,6 +117,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2022/01/12 | Record.findRecord の Response Sample を修正 |
     | 2021/09/14 | ApiDefinition.putApiDefinition 実行時の注意事項を追記 |
     | 2021/07/27 | DatabaseDefinition.listDatabaseDefinition および DatabaseDefinition.getDatabaseDefinition で返却される項目の並び順を管理画面のデータベース設計で設定された表示順で返却するよう修正 |
     | 2021/06/29 | 選択肢のプロパティに required を補完するよう変更されたため example を修正 |
@@ -1848,15 +1849,14 @@ paths:
               schema:
                 type: object
               example:
-                items:
-                  - id: 2
-                    birthday: "YYYY-MM-DD"
-                    multipleSelect:
-                    - value: 2
-                      extraText: string
-                    name: string
-                    email: xxxx@xxxx.com
-                    age: 20
+                id: 2
+                birthday: "YYYY-MM-DD"
+                multipleSelect:
+                - value: 2
+                  extraText: string
+                name: string
+                email: xxxx@xxxx.com
+                age: 20
         400:
           description: 不正なリクエストです
           content:
