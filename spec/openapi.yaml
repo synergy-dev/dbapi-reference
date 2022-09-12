@@ -1,7 +1,7 @@
 openapi: 3.0.2
 
 info:
-  version: 1.1.0
+  version: 1.2.0
   title: Synergy!データベースAPI
   description: |
     # はじめに
@@ -17,6 +17,7 @@ info:
     ## 認証
     管理画面上の API 管理からクライアント認証キー、クライアントシークレットの発行を行なってください。
     発行時アクセス可能な IP アドレスを設定することで、指定した IP アドレス以外からのリクエストを制限することができます。
+    ※アクセストークン取得（auth.paas.crmstyle.com）のアクセスは、指定した IP アドレスからのリクエスト制限の対象外です。
 
     Synergy!データベースAPI にアクセスするためには、リクエストヘッダーに発行したクライアント認証キー、クライアントシークレットを使用して取得したアクセストークンを付与する必要があります。  
     アクセストークンは事前に Synergy! 認可サーバ (https://auth.paas.crmstyle.com/oauth2/token) から OAuth 2.0 のクライアント・クレデンシャルズフローにより取得します。  
@@ -130,6 +131,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2022/09/13 | パスワード認証API（Record.authenticate）を追加 <br> リソースにアクセスする権限が不足している場合の説明を追記 <br> Record.findRecord を Record.getRecord に修正 |
     | 2022/04/19 | リクエスト数制限を レート：50/sec、バースト：200 から　レート：150/sec、バースト：300 に変更 |
     | 2022/02/24 | タイムアウトおよびリトライについて追記 |
     | 2022/01/12 | Record.findRecord の Response Sample を修正 |
@@ -191,6 +193,7 @@ tags:
       | 単一選択型               | singleSelect                | array  | ◯          |      |
       | 複数選択型               | multipleSelect              | array   | ◯         |      |
       | パスワード型             | password                    | string  |  ◯         |      |
+      | パスワードハッシュ型      | passwordHash                | string  |  ◯         |      |
 
       ## 既存項目を API に定義する
       Synergy!データベースAPI では、既に管理画面などからデータベースに設定されている項目を API に定義することができます。
@@ -1021,6 +1024,38 @@ components:
           description: エラーが発生した URL パス
           type: string
 
+    AuthenticateRequest:
+      type: object
+      properties:
+        propertyName:
+          type: string
+          description: |
+            APIに定義されている項目のプロパティ名
+        value:
+          type: string
+          description: |
+            パスワード
+      required:
+        - propertyName
+        - value
+      example:
+        propertyName: "passwordHash"
+        value: "Password"
+
+    AuthenticateResponse:
+      type: object
+      properties:
+        result:
+          type: "string"
+          enum: 
+            - authenticated
+            - unauthenticated
+            - emptyPassword
+      required:
+        - result
+      example:
+        result: authenticated
+
   parameters:
     accountCode:
       name: accountCode
@@ -1106,7 +1141,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1283,7 +1321,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています 
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1330,7 +1371,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1369,7 +1413,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1433,7 +1480,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1491,7 +1541,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1537,7 +1590,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1587,7 +1643,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1663,7 +1722,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1755,7 +1817,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1820,7 +1885,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1855,7 +1923,7 @@ paths:
       tags:
         - Record
       description: ID で指定されたレコードを取得します。
-      operationId: findRecord
+      operationId: getRecord
       responses:
         200:
           description: 検索結果取得成功時のレスポンスです
@@ -1885,7 +1953,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -1967,7 +2038,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
@@ -2016,13 +2090,83 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         403:
-          description: リソースにアクセスする権限が不足しています
+          description: |
+            リソースにアクセスする権限が不足しています 
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         404:
           description: 対象レコードが存在しません
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+        429:
+          description: アクセス回数が制限数を超過しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+      security:
+        - oauth:
+            - db:record:execute
+        - bearer: []
+
+  /apis/record.database/v1/accounts/{accountCode}/{name}/records/{id}/authenticate:
+    parameters:
+      - $ref: "#/components/parameters/accountCode"
+      - name: name
+        in: path
+        description: API 定義名
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: レコード ID
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - Record
+      description: |
+        パスワードハッシュ型項目でレコードの認証を行います。
+      operationId: authenticate
+      requestBody:
+        description: 認証情報
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthenticateRequest"
+      responses:
+        200:
+          description: 認証結果のレスポンスです。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticateResponse"
+        400:
+          description: 不正なリクエストです
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+        401:
+          description: アクセストークンが設定されていないか不正な値です
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseSchema"
+        403:
+          description: |
+            リソースにアクセスする権限が不足しています
+            - スコープが利用できる設定になっていない
+            - 許可IPアドレスからのアクセスではない
           content:
             application/json:
               schema:
