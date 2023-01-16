@@ -1,7 +1,7 @@
 openapi: 3.0.2
 
 info:
-  version: 1.2.0
+  version: 1.3.0
   title: Synergy!データベースAPI
   description: |
     # はじめに
@@ -49,6 +49,7 @@ info:
     | db:apidefinition:design | ・ApiDefinition <br> ・OpenApi <br> ・DatabaseDefinition |
     | db:openapi:read         | ・OpenApi                                               |
     | db:record:execute       | ・Record                                                |
+    | db:record:read          | ・Record.queryRecords <br> ・Record.countRecords <br> ・Record.getRecord <br> ・Record.authenticate |
 
     #### リクエストサンプル
     ```
@@ -131,6 +132,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2023/01/17 | レコード参照のみを実行できる db:record:read スコープを追加 <br> アクセストークンが不正である場合の説明を追記 <br> customerDB項目作成による月額費用の変動についての注意文言を追記 |
     | 2022/09/13 | パスワード認証API（Record.authenticate）を追加 <br> リソースにアクセスする権限が不足している場合の説明を追記 <br> Record.findRecord を Record.getRecord に修正 |
     | 2022/04/19 | リクエスト数制限を レート：50/sec、バースト：200 から　レート：150/sec、バースト：300 に変更 |
     | 2022/02/24 | タイムアウトおよびリトライについて追記 |
@@ -1102,6 +1104,7 @@ components:
             db:apidefinition:design: ApiDefinition 全般実行、OpenApi 定義参照、データベース設定情報参照
             db:openapi:read: OpenApi 定義参照のみ可能
             db:record:execute: Record 全般実行
+            db:record:read: Record 参照のみ可能
     bearer:
       type: http
       scheme: bearer
@@ -1135,7 +1138,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1206,7 +1213,8 @@ paths:
         #### プロパティ名について
         定義対象のプロパティ名（key）にセットしてください。  
         プロパティ名は英小文字で始まり英数字またはアンダースコアで構成される必要があります。`pattern: [a-z][a-zA-Z0-9_]*`  
-        新規作成可能な型かつ {API 定義名}_{プロパティ名} と同一の項目名がデータベースに存在しない場合、項目を新規作成して定義されます。
+        新規作成可能な型かつ {API 定義名}_{プロパティ名} と同一の項目名がデータベースに存在しない場合、項目を新規作成して定義されます。  
+        ※customerDb（マスターデータベース）で作成した項目数により月額費用は変動します。詳しい料金に関しては、[こちら](https://support.crmstyle.com/contract/contract-pricelist)を参照してください。
 
         例）API 定義名が `api1` プロパティ名が `age` の場合、データベース上の項目名は `api1_age` となります。
         ```
@@ -1315,7 +1323,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1365,7 +1377,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1407,7 +1423,11 @@ paths:
         204:
           description: API 定義削除成功時のレスポンスです
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること          
           content:
             application/json:
               schema:
@@ -1474,7 +1494,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1535,7 +1559,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1584,7 +1612,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1637,7 +1669,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1708,7 +1744,7 @@ paths:
                     extraText: test
                   name: test-name
                   email: xxxx@xxxx.com
-                  age: 20
+                  age: 20.0
         400:
           description: 不正なリクエストです
           content:
@@ -1716,7 +1752,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1796,14 +1836,14 @@ paths:
                       extraText: string
                     name: string
                     email: xxxx@xxxx.com
-                    age: 60
+                    age: 60.0
                   - id: 1
                     birthday: "YYYY-MM-DD"
                     multipleSelect:
                     - value: 1
                     name: string
                     email: xxxx@xxxx.com
-                    age: 20
+                    age: 20.0
         400:
           description: 不正なリクエストです
           content:
@@ -1811,7 +1851,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1834,6 +1878,7 @@ paths:
       security:
         - oauth:
             - db:record:execute
+            - db:record:read
         - bearer: []
 
   /apis/record.database/v1/accounts/{accountCode}/{name}/count:
@@ -1879,7 +1924,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1902,6 +1951,7 @@ paths:
       security:
         - oauth:
             - db:record:execute
+            - db:record:read
         - bearer: []
 
   /apis/record.database/v1/accounts/{accountCode}/{name}/records/{id}:
@@ -1939,7 +1989,7 @@ paths:
                   extraText: string
                 name: string
                 email: xxxx@xxxx.com
-                age: 20
+                age: 20.0
         400:
           description: 不正なリクエストです
           content:
@@ -1947,7 +1997,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -1976,6 +2030,7 @@ paths:
       security:
         - oauth:
             - db:record:execute
+            - db:record:read
         - bearer: []
 
     patch:
@@ -2024,7 +2079,7 @@ paths:
                     extraText: string
                   name: string
                   email: xxxx@xxxx.com
-                  age: 25
+                  age: 25.0
         400:
           description: 不正なリクエストです
           content:
@@ -2032,7 +2087,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -2084,7 +2143,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -2157,7 +2220,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponseSchema"
         401:
-          description: アクセストークンが設定されていないか不正な値です
+          description: |
+            アクセストークンが不正です。以下をご確認ください
+              - アクセストークンを指定していること
+              - アクセストークンが不正な値や期限切れでないこと
+              - アクセストークン取得時にaudienceパラメータが指定していること
           content:
             application/json:
               schema:
@@ -2180,4 +2247,5 @@ paths:
       security:
         - oauth:
             - db:record:execute
+            - db:record:read
         - bearer: []
