@@ -21,7 +21,9 @@ info:
 
     Synergy!データベースAPI にアクセスするためには、リクエストヘッダーに発行したクライアント認証キー、クライアントシークレットを使用して取得したアクセストークンを付与する必要があります。  
     アクセストークンは事前に Synergy! 認可サーバ (https://auth.paas.crmstyle.com/oauth2/token) から OAuth 2.0 のクライアント・クレデンシャルズフローにより取得します。  
-    アクセストークンには有効期限が設定されており、切れるまでアクセストークンは有効です。Synergy!データベースAPI へアクセスするたびにアクセストークンを取得しないようにしてください。
+    アクセストークンには有効期限が設定されており、切れるまでアクセストークンは有効です。Synergy!データベースAPI へアクセスするたびにアクセストークンを取得しないようにしてください。  
+    アクセストークンの取得には、IPアドレス単位で1分間あたり最大100リクエストの上限を設けていますので、その上限を超えた場合はエラーを応答します。（HTTPステータスコード：429）  
+    上限エラーとなった場合、再度アクセストークンを取得するには1分程度時間をあけてからアクセスする必要があります。
 
     ### アクセストークン取得
 
@@ -132,6 +134,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2023/12/12 | アクセストークン取得時のレートリミットの説明を追加 <br> プロパティの定義について追記 <br> Synergy! 項目型一覧について追記 <br> データ変換ルールを追加 |
     | 2023/01/17 | レコード参照のみを実行できる db:record:read スコープを追加 <br> アクセストークンが不正である場合の説明を追記 <br> customerDB項目作成による月額費用の変動についての注意文言を追記 |
     | 2022/09/13 | パスワード認証API（Record.authenticate）を追加 <br> リソースにアクセスする権限が不足している場合の説明を追記 <br> Record.findRecord を Record.getRecord に修正 |
     | 2022/04/19 | リクエスト数制限を レート：50/sec、バースト：200 から　レート：150/sec、バースト：300 に変更 |
@@ -196,6 +199,16 @@ tags:
       | 複数選択型               | multipleSelect              | array   | ◯         |      |
       | パスワード型             | password                    | string  |  ◯         |      |
       | パスワードハッシュ型      | passwordHash                | string  |  ◯         |      |
+
+      * `文字型`、`数値型`、`年月日型`、`タイムスタンプ型`は `type` および `format` を指定することで、x-synergy-type を省略することができます。
+
+      | Synergy! 項目型 | type   | format   |
+      |----------------|--------|----------|
+      | 文字型          | string | -        |
+      | 数値型          | number | -        |
+      | 年月日型        | string | date      |
+      | 月日型          | string | month-day |
+      | タイムスタンプ型 | string | date-time |
 
       ## 既存項目を API に定義する
       Synergy!データベースAPI では、既に管理画面などからデータベースに設定されている項目を API に定義することができます。
@@ -282,6 +295,19 @@ tags:
       | タイムスタンプ型         | ○             | ○                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
       | 単一選択型              | ○             | ○                     | ○                     | ○              | ×                         | ×                                                                | ×                                |
       | 複数選択型              | ×             | ○                     | ×                     | ×              | ○                         | ×                                                                | ○                                |
+
+      ## データ変換
+      文字化けなどの問題を避けるため、DBAPIでは以下ルールで文字変換を行っております。  
+      
+      | 変換前 | 変換後 |
+      | --- | --- |
+      | ―<br>HORIZONTAL BAR<br>U+2015 | —<br>EM DASH<br>U+2014 |
+      | ～<br>FULLWIDTH TILDE<br>U+FF5E | 〜<br>WAVE DASH<br>U+301C |
+      | ∥<br>PARALLEL TO<br>U+2225 | ‖<br>DOUBLE VERTICAL LINE<br>U+2016 |
+      | －<br>FULLWIDTH HYPHEN<br>U+FF0D | −<br>MINUS SIGN<br>U+2212 |
+      | ￠<br>FULLWIDTH CENT SIGN<br>U+FFE0 | ¢<br>CENT SIGN<br>U+00A2 |
+      | ￡<br>FULLWIDTH POUND SIGN<br>U+FFE1 | £<br>POUND SIGN<br>U+00A3 |
+      | ￢<br>FULLWIDTH NOT SIGN<br>U+FFE2 | ¬<br>NOT SIGN<br>U+00AC |
 
       ## サンプルコード
       データベースAPI(ver1.0.0) を実行するサンプルプログラムです。  
@@ -1208,7 +1234,8 @@ paths:
         | historyDb  | 履歴型データベース  |
 
         ### プロパティの定義
-        `spec.schema.properties` にプロパティ名および型をセットします。
+        `spec.schema.properties` にプロパティ名および型をセットします。  
+        利用（または新規作成）したい項目のプロパティを定義してください。
 
         #### プロパティ名について
         定義対象のプロパティ名（key）にセットしてください。  
@@ -1236,15 +1263,8 @@ paths:
         ```
 
         #### 型について
-        定義対象項目の項目型を [Synergy! 項目型一覧](#section/Synergy!) を参考に `x-synergy-type` にセットしてください。
-        * `文字型`、`数値型`、`年月日型`、`タイムスタンプ型`は `type` および `format` を指定することで、x-synergy-type を省略することができます。
-        | Synergy! 項目型 | type   | format   |
-        |----------------|--------|----------|
-        | 文字型          | string | -        |
-        | 数値型          | number | -        |
-        | 年月日型        | string | date      |
-        | 月日型          | string | month-day |
-        | タイムスタンプ型 | string | date-time |
+        定義対象項目の項目型を [Synergy! 項目型一覧](#section/Synergy!) を参考に `x-synergy-type` にセットしてください。  
+        `x-synergy-type`をセットすることで`type` および `format` を省略することが可能です。
 
         * 定義対象のデータベース種別により各 ID 型を定義する必要があります。
         | データベース種別    | 説明              |
