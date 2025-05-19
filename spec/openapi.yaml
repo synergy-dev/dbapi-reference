@@ -134,6 +134,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2025/05/20 | ApiDefinition.putApiDefinition の Request samples にデータベース種別が履歴型データベースの場合のサンプルを追記 <br> 登録可能な最大 API 定義数を 10 から 20 に変更 |
     | 2023/12/12 | アクセストークン取得時のレートリミットの説明を追加 <br> プロパティの定義について追記 <br> Synergy! 項目型一覧について追記 <br> データ変換ルールを追加 |
     | 2023/01/17 | レコード参照のみを実行できる db:record:read スコープを追加 <br> アクセストークンが不正である場合の説明を追記 <br> customerDB項目作成による月額費用の変動についての注意文言を追記 |
     | 2022/09/13 | パスワード認証API（Record.authenticate）を追加 <br> リソースにアクセスする権限が不足している場合の説明を追記 <br> Record.findRecord を Record.getRecord に修正 |
@@ -1278,7 +1279,7 @@ paths:
         ## 登録数上限
         | 項目   | 上限数 |
         | ---- | ---- |
-        | 登録可能な最大 API 定義数  |  10  |
+        | 登録可能な最大 API 定義数  |  20  |
         | 1API のプロパティ（ApiDefinition.spec.schema.properties）数上限  |  100  |
 
       operationId: putApiDefinition
@@ -1293,42 +1294,65 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/ApiDefinition"
-            example:
-              metadata:
-                kind: ApiDefinition
-                apiVersion: database/v1
-                name: api1
-              spec:
-                resources:
-                  main:
-                    mapping: _customer
-                    type: customerDb
-                schema:
-                  properties:
-                    id:
-                      x-synergy-type: synergyId
-                    email:
-                      x-synergy-type: mailAddress
-                    createdAt:
-                      x-synergy-type: registeredDate
-                    updatedAt:
-                      x-synergy-type: updatedDate
-                    name:
-                      type: string
-                    age:
-                      type: number
-                    birthday:
-                      type: string
-                      format: date
-                    multipleSelect:
-                      x-synergy-type: multipleSelect
-                      x-synergy-select-value-definitions: 
-                        - value: 1
-                          label: "select1"
-                          hasExtraText: false
-                        - value: 2
-                          label: "select2"
-                          hasExtraText: true
+            examples:
+              マスターデータベース:
+                value:
+                  metadata:
+                    kind: ApiDefinition
+                    apiVersion: database/v1
+                    name: api1
+                  spec:
+                    resources:
+                      main:
+                        mapping: _customer
+                        type: customerDb
+                    schema:
+                      properties:
+                        id:
+                          x-synergy-type: synergyId
+                        email:
+                          x-synergy-type: mailAddress
+                        createdAt:
+                          x-synergy-type: registeredDate
+                        updatedAt:
+                          x-synergy-type: updatedDate
+                        name:
+                          type: string
+                        age:
+                          type: number
+                        birthday:
+                          type: string
+                          format: date
+                        multipleSelect:
+                          x-synergy-type: multipleSelect
+                          x-synergy-select-value-definitions:
+                            - value: 1
+                              label: "select1"
+                              hasExtraText: false
+                            - value: 2
+                              label: "select2"
+                              hasExtraText: true
+              履歴型データベース:
+                value:
+                  metadata:
+                    kind: ApiDefinition
+                    apiVersion: database/v1
+                    name: api2
+                  spec:
+                    resources:
+                      main:
+                        mapping: _history1
+                        type: historyDb
+                    schema:
+                      properties:
+                        "id":
+                          "x-synergy-type": historyId
+                        "synergyId":
+                          "x-synergy-type": synergyId
+                        name:
+                          type: string
+                        age:
+                          type: number
       responses:
         200:
           description: API 定義登録成功時のレスポンスです
