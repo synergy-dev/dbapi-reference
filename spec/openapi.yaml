@@ -134,6 +134,7 @@ info:
     ## 改訂履歴
     | 改訂日      | 更新内容 |
     |------------|---------|
+    | 2026/11/17 | ApiDefinition のスキーマ（ApiResourceSchema）に、レコード登録時に送信を必須とするプロパティを指定する required を追加 <br> ObjectMeta の apiVersion を必須項目として明記 <br> ApiResourceProperty の説明にある OpenAPI V3 Schema へのリンクを修正 |
     | 2025/05/20 | ApiDefinition.putApiDefinition の Request samples にデータベース種別が履歴型データベースの場合のサンプルを追記 <br> 登録可能な最大 API 定義数を 10 から 20 に変更 |
     | 2023/12/12 | アクセストークン取得時のレートリミットの説明を追加 <br> プロパティの定義について追記 <br> Synergy! 項目型一覧について追記 <br> データ変換ルールを追加 |
     | 2023/01/17 | レコード参照のみを実行できる db:record:read スコープを追加 <br> アクセストークンが不正である場合の説明を追記 <br> customerDB項目作成による月額費用の変動についての注意文言を追記 |
@@ -321,6 +322,7 @@ components:
         オブジェクトに共通のメタデータ
       type: object
       required:
+        - apiVersion
         - kind
         - name
       properties:
@@ -592,6 +594,17 @@ components:
           maxProperties: 100
           additionalProperties:
             $ref: "#/components/schemas/ApiResourceProperty"
+        required:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          uniqueItems: true
+          description: |
+            レコード登録時に送信を必須とするプロパティ名の一覧です。  
+            レコード登録（createRecord）時のみ適用され、レコード更新（patchRecord）には適用されません。  
+            `properties` に定義したプロパティ名のみ指定できます。x-synergy-type が registeredDate / updatedDate のプロパティは指定できません。  
+            値に null を許可しない場合は、プロパティに `nullable: false` を併せて指定してください。
 
     ApiDefinitionList:
       type: object
@@ -606,7 +619,7 @@ components:
     ApiResourceProperty:
       type: object
       description: |
-        [OpenAPI V3 Schema](https://github.com/OAI/OpenAPI-Specification/blob/master/schemas/v3.0/schema.yaml) の拡張サブセット  
+        [OpenAPI V3 Schema](https://github.com/OAI/OpenAPI-Specification/blob/main/_archive_/schemas/v3.0/schema.yaml) の拡張サブセット  
         以下の制約があります。  
 
         | type          | 制約                                 |
